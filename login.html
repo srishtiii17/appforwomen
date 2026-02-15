@@ -3,150 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eraya - Login</title>
+    <title>Eraya - Login / Sign Up</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        .auth-page { min-height: 100vh; background: var(--lavender-blush); display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-box { background: var(--white); border-radius: 24px; padding: 40px; max-width: 420px; width: 100%; box-shadow: 0 10px 40px rgba(207, 116, 134, 0.15); }
-        .auth-box h1 { font-size: 28px; color: var(--dark-text); margin-bottom: 8px; }
-        .auth-box p { color: var(--light-text); margin-bottom: 24px; font-size: 14px; }
-        .auth-tabs { display: flex; gap: 0; margin-bottom: 24px; border-bottom: 2px solid var(--lavender-blush); }
-        .auth-tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; font-weight: 600; color: var(--light-text); border: none; background: none; font-size: 15px; }
-        .auth-tab.active { color: var(--blush); border-bottom: 2px solid var(--blush); margin-bottom: -2px; }
-        .auth-form { display: none; }
-        .auth-form.active { display: block; }
-        .auth-form .form-group { margin-bottom: 18px; }
-        .auth-form label { display: block; font-size: 14px; font-weight: 600; color: var(--dark-text); margin-bottom: 6px; }
-        .auth-form input { width: 100%; padding: 12px 14px; border: 2px solid var(--light-pink); border-radius: 12px; font-size: 15px; box-sizing: border-box; }
-        .auth-form input:focus { outline: none; border-color: var(--blush); }
-        .auth-btn { width: 100%; padding: 14px; background: var(--blush); color: var(--white); border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 8px; }
-        .auth-btn:hover { background: #b86474; }
-        .auth-btn:disabled { opacity: 0.7; cursor: not-allowed; }
-        .auth-error { color: #c00; font-size: 14px; margin-top: 12px; }
-        .auth-footer { text-align: center; margin-top: 24px; }
-        .auth-footer a { color: var(--blush); text-decoration: none; font-weight: 600; }
-        .auth-footer a:hover { text-decoration: underline; }
-    </style>
 </head>
-<body>
-    <div class="auth-page">
-        <div class="auth-box">
-            <h1>Eraya</h1>
-            <p>Sign in or create an account to save your data.</p>
-            <div class="auth-tabs">
-                <button type="button" class="auth-tab active" data-tab="login">Login</button>
-                <button type="button" class="auth-tab" data-tab="register">Register</button>
+<body class="auth-body">
+
+    <!-- LOGIN PANEL -->
+    <div class="auth-card" id="loginPanel">
+        <div class="auth-form-side">
+            <div class="auth-brand">
+                <img src="logo.png" alt="Eraya Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'">
+                <span style="display:none">Eraya</span>
             </div>
-            <form id="loginForm" class="auth-form active">
-                <div class="form-group">
-                    <label for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" required placeholder="you@example.com">
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" required placeholder="••••••••">
-                </div>
-                <button type="submit" class="auth-btn" id="loginBtn">Sign in</button>
-                <div id="loginError" class="auth-error"></div>
-            </form>
-            <form id="registerForm" class="auth-form">
-                <div class="form-group">
-                    <label for="regName">Name</label>
-                    <input type="text" id="regName" required placeholder="Your name">
-                </div>
-                <div class="form-group">
-                    <label for="regEmail">Email</label>
-                    <input type="email" id="regEmail" required placeholder="you@example.com">
-                </div>
-                <div class="form-group">
-                    <label for="regPassword">Password</label>
-                    <input type="password" id="regPassword" required placeholder="••••••••" minlength="6">
-                </div>
-                <button type="submit" class="auth-btn" id="registerBtn">Create account</button>
-                <div id="registerError" class="auth-error"></div>
-            </form>
-            <div class="auth-footer">
-                <a href="index.html">← Back to app</a>
+            <h2>Welcome to ERAYA</h2>
+            <p>Your personalized menstrual wellness companion</p>
+
+            <div class="auth-field">
+                <label for="loginEmail">Email Address</label>
+                <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email">
+            </div>
+            <div class="auth-field">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+            </div>
+            <div class="auth-row">
+                <label><input type="checkbox" id="rememberMe"> Remember me</label>
+                <a href="#" class="auth-forgot">Forgot password?</a>
+            </div>
+            <button class="auth-btn" onclick="handleLogin()">Login</button>
+            <div class="auth-switch">
+                Don't have an account? <a onclick="showSignup()">Sign up</a>
             </div>
         </div>
+        <div class="auth-illustration-side">
+            <img src="holding-flowers.png" alt="Wellness illustration" onerror="this.style.opacity='0'">
+            <h3>Track Your Wellness</h3>
+            <p>Understand your cycle, empower your health journey</p>
+        </div>
     </div>
+
+    <!-- SIGNUP PANEL -->
+    <div class="auth-card auth-hidden" id="signupPanel">
+        <div class="auth-form-side">
+            <div class="auth-brand">
+                <img src="logo.png" alt="Eraya Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'">
+                <span style="display:none">Eraya</span>
+            </div>
+            <h2>Create Account</h2>
+            <p>Start your wellness journey today</p>
+
+            <div class="auth-field">
+                <label for="signupName">Full Name</label>
+                <input type="text" id="signupName" placeholder="Your full name">
+            </div>
+            <div class="auth-field">
+                <label for="signupEmail">Email Address</label>
+                <input type="email" id="signupEmail" placeholder="your@email.com">
+            </div>
+            <div class="auth-field">
+                <label for="signupPassword">Password</label>
+                <input type="password" id="signupPassword" placeholder="Create a password (min 6 chars)">
+            </div>
+            <div class="auth-field">
+                <label for="signupConfirm">Confirm Password</label>
+                <input type="password" id="signupConfirm" placeholder="Confirm your password">
+            </div>
+            <button class="auth-btn" onclick="handleSignup()">Create Account</button>
+            <div class="auth-switch">
+                Already have an account? <a onclick="showLogin()">Login</a>
+            </div>
+        </div>
+        <div class="auth-illustration-side">
+            <img src="holding-flowers.png" alt="Wellness illustration" onerror="this.style.opacity='0'">
+            <h3>Join ERAYA</h3>
+            <p>Thousands of women trust ERAYA for their wellness journey</p>
+        </div>
+    </div>
+
     <script>
-        (function() {
-            var loginForm = document.getElementById('loginForm');
-            var registerForm = document.getElementById('registerForm');
-            var loginError = document.getElementById('loginError');
-            var registerError = document.getElementById('registerError');
-            var tabs = document.querySelectorAll('.auth-tab');
-            var forms = document.querySelectorAll('.auth-form');
+        function showSignup() {
+            document.getElementById('loginPanel').classList.add('auth-hidden');
+            document.getElementById('signupPanel').classList.remove('auth-hidden');
+        }
 
-            tabs.forEach(function(t) {
-                t.addEventListener('click', function() {
-                    var tab = this.getAttribute('data-tab');
-                    tabs.forEach(function(x) { x.classList.remove('active'); });
-                    forms.forEach(function(f) { f.classList.remove('active'); });
-                    this.classList.add('active');
-                    document.getElementById(tab === 'login' ? 'loginForm' : 'registerForm').classList.add('active');
-                    loginError.textContent = '';
-                    registerError.textContent = '';
-                });
-            });
+        function showLogin() {
+            document.getElementById('signupPanel').classList.add('auth-hidden');
+            document.getElementById('loginPanel').classList.remove('auth-hidden');
+        }
 
-            function api(url, method, body) {
-                return fetch(url, {
-                    method: method || 'GET',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: body ? JSON.stringify(body) : undefined
-                });
+        function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showToast('Please fill in all fields', 'error');
+                return;
             }
 
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                loginError.textContent = '';
-                var btn = document.getElementById('loginBtn');
-                btn.disabled = true;
-                api('/api/login', 'POST', {
-                    email: document.getElementById('loginEmail').value,
-                    password: document.getElementById('loginPassword').value
-                }).then(function(r) {
-                    return r.json().then(function(data) {
-                        if (r.ok) {
-                            window.location.href = document.referrer && !document.referrer.includes('login') ? document.referrer : 'index.html';
-                        } else {
-                            loginError.textContent = data.error || 'Login failed';
-                        }
-                    });
-                }).catch(function() {
-                    loginError.textContent = 'Network error. Try again.';
-                }).finally(function() {
-                    btn.disabled = false;
-                });
-            });
+            // Look up user in storage
+            const users = JSON.parse(localStorage.getItem('erayaUsers') || '{}');
+            const user = users[email];
 
-            registerForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                registerError.textContent = '';
-                var btn = document.getElementById('registerBtn');
-                btn.disabled = true;
-                api('/api/register', 'POST', {
-                    name: document.getElementById('regName').value,
-                    email: document.getElementById('regEmail').value,
-                    password: document.getElementById('regPassword').value
-                }).then(function(r) {
-                    return r.json().then(function(data) {
-                        if (r.ok) {
-                            window.location.href = 'index.html';
-                        } else {
-                            registerError.textContent = data.error || 'Registration failed';
-                        }
-                    });
-                }).catch(function() {
-                    registerError.textContent = 'Network error. Try again.';
-                }).finally(function() {
-                    btn.disabled = false;
-                });
-            });
-        })();
+            if (!user || user.password !== password) {
+                showToast('Invalid email or password', 'error');
+                return;
+            }
+
+            // Save active session
+            localStorage.setItem('erayaUser', JSON.stringify({ email: email, name: user.name }));
+
+            showToast('Welcome back, ' + user.name + '! 🌸', 'success');
+
+            // Returning user → always go straight to dashboard
+            setTimeout(function() {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+
+        function handleSignup() {
+            const name     = document.getElementById('signupName').value.trim();
+            const email    = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirm  = document.getElementById('signupConfirm').value;
+
+            if (!name || !email || !password || !confirm) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+            if (password.length < 6) {
+                showToast('Password must be at least 6 characters', 'error');
+                return;
+            }
+            if (password !== confirm) {
+                showToast('Passwords do not match', 'error');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('erayaUsers') || '{}');
+
+            if (users[email]) {
+                showToast('An account with this email already exists', 'error');
+                return;
+            }
+
+            // Save new user — setupDone starts as false
+            users[email] = { name: name, email: email, password: password, setupDone: false };
+            localStorage.setItem('erayaUsers', JSON.stringify(users));
+
+            // Save active session
+            localStorage.setItem('erayaUser', JSON.stringify({ email: email, name: name }));
+
+            showToast('Account created! Let\'s set up your profile 🌸', 'success');
+
+            // New user → go to setup page; setup.js will redirect to dashboard when done
+            setTimeout(function() {
+                window.location.href = 'setup.html';
+            }, 1000);
+        }
+
+        function showToast(message, type) {
+            const existing = document.querySelector('.auth-toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'auth-toast';
+            toast.style.cssText =
+                'position:fixed;top:24px;right:24px;' +
+                'background:' + (type === 'error' ? '#FF6B9D' : '#4ECDC4') + ';' +
+                'color:white;padding:14px 22px;border-radius:12px;font-size:15px;' +
+                'font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,0.2);z-index:99999;';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(function() { if (toast.parentNode) toast.remove(); }, 3500);
+        }
     </script>
 </body>
 </html>
