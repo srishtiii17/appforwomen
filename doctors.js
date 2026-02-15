@@ -102,9 +102,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // Display doctors
 function displayDoctors(doctors) {
     const grid = document.getElementById('doctorsGrid');
-    if (!grid) return;
     grid.innerHTML = '';
-
+    
     doctors.forEach(doctor => {
         const card = createDoctorCard(doctor);
         grid.appendChild(card);
@@ -116,12 +115,12 @@ function createDoctorCard(doctor) {
     const card = document.createElement('div');
     card.className = 'doctor-card';
     card.setAttribute('data-specialty', doctor.specialty);
-
+    
     const stars = '⭐'.repeat(Math.floor(doctor.rating));
-    const availableBadge = doctor.available ?
-        '<span class="available-badge">Available Today</span>' :
+    const availableBadge = doctor.available ? 
+        '<span class="available-badge">Available Today</span>' : 
         '<span class="unavailable-badge">Not Available</span>';
-
+    
     card.innerHTML = `
         <div class="doctor-header">
             <div class="doctor-avatar">${doctor.avatar}</div>
@@ -162,7 +161,7 @@ function createDoctorCard(doctor) {
             </button>
         </div>
     `;
-
+    
     return card;
 }
 
@@ -185,9 +184,9 @@ function filterDoctors(specialty, element) {
         chip.classList.remove('active');
     });
     element.classList.add('active');
-
+    
     currentFilter = specialty;
-
+    
     // Filter and display
     if (specialty === 'all') {
         displayDoctors(doctorsData);
@@ -199,24 +198,22 @@ function filterDoctors(specialty, element) {
 
 // Search doctors
 function searchDoctors() {
-    const searchInput = document.getElementById('searchInput');
-    const searchTerm = (searchInput && searchInput.value) ? searchInput.value.toLowerCase() : '';
-
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    
     const filtered = doctorsData.filter(doctor => {
         return doctor.name.toLowerCase().includes(searchTerm) ||
                doctor.specialty.toLowerCase().includes(searchTerm) ||
                doctor.location.toLowerCase().includes(searchTerm) ||
                doctor.hospital.toLowerCase().includes(searchTerm);
     });
-
+    
     displayDoctors(filtered);
 }
 
 // Contact doctor
 function contactDoctor(doctorId) {
     const doctor = doctorsData.find(d => d.id === doctorId);
-    if (!doctor) return;
-
+    
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
     modal.innerHTML = `
@@ -251,9 +248,9 @@ function contactDoctor(doctorId) {
             </div>
         </div>
     `;
-
+    
     document.body.appendChild(modal);
-
+    
     // Close on backdrop click
     modal.addEventListener('click', function(e) {
         if (e.target === modal) {
@@ -265,13 +262,12 @@ function contactDoctor(doctorId) {
 // Book appointment
 function bookAppointment(doctorId) {
     const doctor = doctorsData.find(d => d.id === doctorId);
-    if (!doctor) return;
-
+    
     if (!doctor.available) {
         alert('Sorry, this doctor is not available today. Please try another day or contact them directly.');
         return;
     }
-
+    
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
     modal.innerHTML = `
@@ -281,19 +277,19 @@ function bookAppointment(doctorId) {
             <form onsubmit="submitBooking(event, ${doctorId})">
                 <div class="form-group">
                     <label>Your Name</label>
-                    <input type="text" name="patient_name" required placeholder="Enter your full name">
+                    <input type="text" required placeholder="Enter your full name">
                 </div>
                 <div class="form-group">
                     <label>Phone Number</label>
-                    <input type="tel" name="patient_phone" required placeholder="Enter your phone number">
+                    <input type="tel" required placeholder="Enter your phone number">
                 </div>
                 <div class="form-group">
                     <label>Preferred Date</label>
-                    <input type="date" name="preferred_date" required min="${getTodayDate()}">
+                    <input type="date" required min="${getTodayDate()}">
                 </div>
                 <div class="form-group">
                     <label>Preferred Time</label>
-                    <select name="preferred_time" required>
+                    <select required>
                         <option value="">Select time slot</option>
                         <option value="09:00">09:00 AM</option>
                         <option value="10:00">10:00 AM</option>
@@ -305,7 +301,7 @@ function bookAppointment(doctorId) {
                 </div>
                 <div class="form-group">
                     <label>Reason for Visit (Optional)</label>
-                    <textarea name="reason" placeholder="Brief description of your concerns"></textarea>
+                    <textarea placeholder="Brief description of your concerns"></textarea>
                 </div>
                 <div class="booking-summary">
                     <div class="summary-row">
@@ -320,9 +316,9 @@ function bookAppointment(doctorId) {
             </form>
         </div>
     `;
-
+    
     document.body.appendChild(modal);
-
+    
     modal.addEventListener('click', function(e) {
         if (e.target === modal) {
             modal.remove();
@@ -330,47 +326,16 @@ function bookAppointment(doctorId) {
     });
 }
 
-// Submit booking (sends to server when logged in)
+// Submit booking
 function submitBooking(event, doctorId) {
     event.preventDefault();
     const doctor = doctorsData.find(d => d.id === doctorId);
-    if (!doctor) return;
-
-    const form = event.target;
-    const payload = {
-        doctor_id: doctor.id,
-        doctor_name: doctor.name,
-        preferred_date: form.elements['preferred_date'].value,
-        preferred_time: form.elements['preferred_time'].value,
-        patient_name: form.elements['patient_name'].value,
-        patient_phone: form.elements['patient_phone'].value,
-        reason: (form.elements['reason'] && form.elements['reason'].value) || ''
-    };
-
-    const opts = { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) };
-    fetch('/api/appointments', opts)
-        .then(function(r) {
-            if (r.status === 401) {
-                if (confirm('Please sign in to book an appointment. Go to login?')) {
-                    window.location.href = 'login.html?next=' + encodeURIComponent(window.location.href);
-                }
-                return null;
-            }
-            return r.json();
-        })
-        .then(function(data) {
-            if (!data) return;
-            const overlay = event.target.closest('.modal-overlay');
-            if (overlay) overlay.remove();
-            if (data.error) {
-                alert(data.error);
-            } else {
-                alert('Appointment requested successfully with ' + doctor.name + '. You will be contacted to confirm.');
-            }
-        })
-        .catch(function() {
-            alert('Could not save appointment. Check your connection and try again.');
-        });
+    
+    // Here you would normally send this data to a server
+    alert(`Appointment booked successfully with ${doctor.name}!\n\nYou will receive a confirmation email shortly.`);
+    
+    // Close modal
+    event.target.closest('.modal-overlay').remove();
 }
 
 // Get today's date in YYYY-MM-DD format
